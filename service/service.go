@@ -32,6 +32,9 @@ func (s *Service) CreateTeam(t model.Team, l model.LogoAsset, a model.Announceme
 	if e := s.Store.SaveTeam(t); e != nil {
 		return e
 	}
+	// SaveTeam upserts, so an existing ID may have a stale cached projection.
+	// Drop it so the next read picks up the freshly written record.
+	s.Cache.Invalidate("team:" + t.ID)
 	if e := s.Store.SaveLogo(l); e != nil {
 		return e
 	}
@@ -44,6 +47,10 @@ func (s *Service) UpdateTeam(t model.Team) error {
 	if e := s.Store.SaveTeam(t); e != nil {
 		return e
 	}
+	// Drop the cached projection so subsequent reads reflect the new value.
+	// Only invalidate after a successful write; a failed save leaves the
+	// store (and thus the cached copy) unchanged.
+	s.Cache.Invalidate("team:" + t.ID)
 	return nil
 }
 func (s *Service) SaveAnnouncement(a model.Announcement) error {
