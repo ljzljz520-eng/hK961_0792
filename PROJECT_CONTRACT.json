@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "metrics": {
+    "production_loc": 2059,
+    "production_files": 18,
+    "production_packages": 9,
+    "test_files": 9,
+    "production_functions": 23,
+    "decision_points": 17
+  },
+  "persistence": {
+    "module": "go.etcd.io/bbolt",
+    "entities": ["Team", "LogoAsset", "Announcement", "AuditEvent"],
+    "reopen_test": "TestPersistenceSurvivesReopen"
+  },
+  "workflows": [
+    {"steps":["select active team","read persisted records","form deterministic particles","show slogan and controls"],"test":"TestWorkflowLaunch"},
+    {"steps":["create or update identity","validate domain fields","persist changes","query latest projection"],"test":"TestWorkflowManagement"},
+    {"steps":["drag emblem","toggle fracture","adjust direction","emit frame snapshot"],"test":"TestWorkflowCustomize"}
+  ]
+}
